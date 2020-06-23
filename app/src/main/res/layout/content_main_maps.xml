@@ -64,5 +64,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:text="@string/addNewRoute" />
+
+        <Button
+            android:id="@+id/btn_viewRotas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_viewRotas" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

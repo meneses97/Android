@@ -28,9 +28,12 @@ public class RotaController {
         connection.insertOrThrow("rota",null, contentValues);
     }
 
-//    public boolean deletePlace(){
-//        return true;
-//    }
+    public void remove(int idrota){
+        String[] parameters = new String[1];
+        parameters[0] = String.valueOf(idrota);
+
+        connection.delete("rota","idrota = ?", parameters);
+    }
 
     public List<Rota> fetchAll(){
         List<Rota> rotaList = new ArrayList<>();

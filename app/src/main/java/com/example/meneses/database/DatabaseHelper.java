@@ -18,12 +18,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(ScriptDDL.createUserTable());
         db.execSQL("INSERT INTO user (email, name, password) VALUES ('dinho@gmail.com','Aderito', '12345')");
-        db.execSQL("INSERT INTO user (email, name, password) VALUES ('admin@gmail.com','Adelito', '00011')");
+        db.execSQL("INSERT INTO user (email, name, password) VALUES ('admin@gmail.com','Josue', '00011')");
 
         db.execSQL(ScriptDDL.createRotaTable());
         db.execSQL("INSERT INTO rota (origem, destino) VALUES ('emulacao','muxara')");
         db.execSQL("INSERT INTO rota (origem, destino) VALUES ('baixa','gingone')");
-        db.execSQL("INSERT INTO rota (origem, destino) VALUES ('cimento','wimbe')");
     }
 
     @Override

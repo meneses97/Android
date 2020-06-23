@@ -40,4 +40,6 @@
     <string name="title_activity_weather">Weather</string>
     <string name="addNewRoute">Add new route</string>
     <string name="title_activity_add_route">AddRoute</string>
+    <string name="title_viewRotas">View Routes</string>
+    <string name="title_activity_list_routes">ListRoutes</string>
 </resources>

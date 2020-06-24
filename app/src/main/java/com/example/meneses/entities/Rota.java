@@ -42,6 +42,9 @@ public class Rota {
     @NonNull
     @Override
     public String toString() {
-        return super.toString();
+
+        return "Route: "+idrota+"\n"+
+                "Origin: "+origem+"\n"+
+                "Destination: "+destino;
     }
 }

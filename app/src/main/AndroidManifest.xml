@@ -69,8 +69,8 @@
             android:label="@string/title_activity_add_route"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.example.meneses.maps.ListRoutes"
-            android:label="@string/title_activity_list_routes"
+            android:name=".ListingRoutes"
+            android:label="@string/title_activity_listing_routes"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

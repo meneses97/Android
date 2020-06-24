@@ -28,11 +28,12 @@ public class RotaController {
         connection.insertOrThrow("rota",null, contentValues);
     }
 
-    public void remove(int idrota){
-        String[] parameters = new String[1];
-        parameters[0] = String.valueOf(idrota);
+    public void remove(String origin, String destination){
+        String[] parameters = new String[2];
+        parameters[0] = origin;
+        parameters[1] = destination;
 
-        connection.delete("rota","idrota = ?", parameters);
+        connection.delete("rota","origem = ? AND destino = ?", parameters);
     }
 
     public List<Rota> fetchAll(){
@@ -65,5 +66,34 @@ public class RotaController {
         }
 
         return rotaList;
+    }
+
+    public Rota fetchOne(String origin, String dest){
+        Rota rota = new Rota();
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT idrota,");
+        sql.append("       origem,");
+        sql.append("       destino");
+        sql.append("  FROM rota");
+        sql.append("  WHERE origem = ? AND destino = ?");
+
+        String[] parameters = new String[2];
+        parameters[0] = origin;
+        parameters[1] = dest;
+
+        Cursor result = connection.rawQuery(sql.toString(), parameters);
+
+        if(result.getCount() > 0){
+            result.moveToFirst();
+
+            rota.setIdrota(result.getInt(result.getColumnIndexOrThrow("idrota")));
+            rota.setOrigem(result.getString(result.getColumnIndexOrThrow("origem")));
+            rota.setDestino(result.getString(result.getColumnIndexOrThrow("destino")));
+
+            return rota;
+        }
+
+        return null;
     }
 }

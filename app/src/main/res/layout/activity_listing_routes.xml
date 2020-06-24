@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.meneses.maps.ListRoutes">
+    tools:context=".ListingRoutes">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -20,6 +20,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_list_routes" />
+    <include layout="@layout/content_listing_routes" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

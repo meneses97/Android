@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,8 +31,8 @@ import java.util.concurrent.TimeUnit;
 
 public class AddRoute extends AppCompatActivity {
     Button btn_addroute;
-    TextView origin;
-    TextView destination;
+    EditText origin;
+    EditText destination;
     RotaController rotaController;
     SQLiteDatabase sqLiteDatabase;
     DatabaseHelper databaseHelper;
@@ -43,9 +44,12 @@ public class AddRoute extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //get bundled parameters
+        getParameters();
+
         btn_addroute = findViewById(R.id.addNewRoute_btn);
-        origin = findViewById(R.id.id_originField);
-        destination = findViewById(R.id.id_destField);
+        origin = (EditText) findViewById(R.id.id_originField);
+        destination = (EditText) findViewById(R.id.id_destField);
 
         databaseHelper = new DatabaseHelper(this);
 
@@ -55,6 +59,13 @@ public class AddRoute extends AppCompatActivity {
                 String originF, destF;
                 originF = origin.getText().toString();
                 destF = destination.getText().toString();
+
+                sqLiteDatabase = databaseHelper.getReadableDatabase();
+                rotaController = new RotaController(sqLiteDatabase);
+
+                if(rotaController.fetchOne(originF, destF)!=null){
+                    Toast.makeText(getApplicationContext(), "Rota ja existe!", Toast.LENGTH_LONG).show();
+                }
 
                 if(!originF.equals("") && !destF.equals("")) {
                     sqLiteDatabase = databaseHelper.getWritableDatabase();
@@ -67,6 +78,21 @@ public class AddRoute extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+    private void getParameters(){
+        Bundle bundle = getIntent().getExtras();
+        String str;
+        String[] strings;
+
+        if(bundle!=null && bundle.containsKey("ROTA")){
+            str = bundle.getString("ROTA");
+            strings = str.split("#");
+
+            origin.setText(strings[0]);
+            destination.setText(strings[1]);
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.meneses.maps;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.meneses.loginform.ListingRoutes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -24,6 +25,7 @@ public class MainMaps extends Fragment {
     Button traffic_button;
     Button timetable_button;
     Button addNewRoute_button;
+    Button viewRoutes_button;
 
     @Nullable
     @Override
@@ -32,6 +34,7 @@ public class MainMaps extends Fragment {
         timetable_button = view.findViewById(R.id.timetable_btn);
         traffic_button = view.findViewById(R.id.traffic_btn);
         addNewRoute_button = view.findViewById(R.id.btn_addRotas);
+        viewRoutes_button = view.findViewById(R.id.btn_viewRotas);
 
         traffic_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +58,15 @@ public class MainMaps extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AddRoute.class);
+
+                startActivity(intent);
+            }
+        });
+
+        viewRoutes_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ListingRoutes.class);
 
                 startActivity(intent);
             }

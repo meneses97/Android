@@ -59,8 +59,12 @@ public class Traffic extends AppCompatActivity implements AdapterView.OnItemSele
         rotaList = rotaController.fetchAll();
 
         for(Rota rota: rotaList){
-            originList.add(rota.getOrigem());
-            destList.add(rota.getDestino());
+            if(!originList.contains(rota.getOrigem())) {
+                originList.add(rota.getOrigem());
+            }
+            if(!destList.contains(rota.getDestino())){
+                destList.add(rota.getDestino());
+            }
         }
 
         ArrayAdapter<String> originArrayAdapter = new ArrayAdapter<>(this,

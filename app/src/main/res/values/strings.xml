@@ -42,4 +42,6 @@
     <string name="title_activity_add_route">AddRoute</string>
     <string name="title_viewRotas">View Routes</string>
     <string name="title_activity_list_routes">ListRoutes</string>
+    <string name="title_activity_listing_routes">ListingRoutes</string>
+    <string name="title_registeredRoutes">Registered routes</string>
 </resources>

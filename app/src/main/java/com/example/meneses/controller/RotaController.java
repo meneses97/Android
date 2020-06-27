@@ -19,21 +19,33 @@ public class RotaController {
         this.connection = connection;
     }
 
-    public void insert(String origin, String destination){
+    public void insert(String o, String d){
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put("origem", origin);
-        contentValues.put("destino", destination);
+        contentValues.put("origem", o);
+        contentValues.put("destino", d);
 
         connection.insertOrThrow("rota",null, contentValues);
     }
 
-    public void remove(String origin, String destination){
+    public void remove(Rota rota){
         String[] parameters = new String[2];
-        parameters[0] = origin;
-        parameters[1] = destination;
+        parameters[0] = rota.getOrigem();
+        parameters[1] = rota.getDestino();
 
         connection.delete("rota","origem = ? AND destino = ?", parameters);
+    }
+
+    public void edit(int id, String o, String d){
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put("origem", o);
+        contentValues.put("destino", d);
+
+        String[] parameters = new String[1];
+        parameters[0] = String.valueOf(id);
+
+        connection.update("rota", contentValues, "idrota = ?", parameters);
     }
 
     public List<Rota> fetchAll(){

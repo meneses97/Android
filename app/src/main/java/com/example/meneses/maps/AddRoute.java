@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.example.meneses.controller.RotaController;
 import com.example.meneses.database.DatabaseHelper;
 import com.example.meneses.entities.Rota;
+import com.example.meneses.loginform.ListingRoutes;
 import com.example.meneses.loginform.MainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,9 +32,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.concurrent.TimeUnit;
 
 public class AddRoute extends AppCompatActivity {
+    Intent intent;
+    String originF, destF;
+    int pilot, idrota;
+    Rota rota;
     Button btn_addroute;
-    EditText origin;
-    EditText destination;
+    TextView origin;
+    TextView destination;
     RotaController rotaController;
     SQLiteDatabase sqLiteDatabase;
     DatabaseHelper databaseHelper;
@@ -44,55 +50,77 @@ public class AddRoute extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //get bundled parameters
-        getParameters();
-
+        pilot = 0;
         btn_addroute = findViewById(R.id.addNewRoute_btn);
-        origin = (EditText) findViewById(R.id.id_originField);
-        destination = (EditText) findViewById(R.id.id_destField);
+        origin = findViewById(R.id.id_originField);
+        destination = findViewById(R.id.id_destField);
 
         databaseHelper = new DatabaseHelper(this);
+        verifyParameters();
 
         btn_addroute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String originF, destF;
-                originF = origin.getText().toString();
-                destF = destination.getText().toString();
-
-                sqLiteDatabase = databaseHelper.getReadableDatabase();
-                rotaController = new RotaController(sqLiteDatabase);
-
-                if(rotaController.fetchOne(originF, destF)!=null){
-                    Toast.makeText(getApplicationContext(), "Rota ja existe!", Toast.LENGTH_LONG).show();
-                }
-
-                if(!originF.equals("") && !destF.equals("")) {
-                    sqLiteDatabase = databaseHelper.getWritableDatabase();
-                    rotaController = new RotaController(sqLiteDatabase);
-                    rotaController.insert(originF, destF);
-
-                    Toast.makeText(getApplicationContext(), "Adicionou com sucesso!", Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Campos vazios!", Toast.LENGTH_LONG).show();
-                }
+                confirmOperation();
             }
         });
 
     }
 
-    private void getParameters(){
-        Bundle bundle = getIntent().getExtras();
+    private void verifyParameters(){
         String str;
         String[] strings;
+        Bundle bundle = getIntent().getExtras();
+
+        sqLiteDatabase = databaseHelper.getReadableDatabase();
+        rotaController = new RotaController(sqLiteDatabase);
 
         if(bundle!=null && bundle.containsKey("ROTA")){
             str = bundle.getString("ROTA");
             strings = str.split("#");
+            rota = rotaController.fetchOne(strings[0], strings[1]);
+            idrota = rota.getIdrota();
 
-            origin.setText(strings[0]);
-            destination.setText(strings[1]);
+            origin.setText(rota.getOrigem());
+            destination.setText(rota.getDestino());
+
+            pilot = 1;
         }
+    }
+
+    private void confirmOperation(){
+        originF = origin.getText().toString();
+        destF = destination.getText().toString();
+        sqLiteDatabase = databaseHelper.getWritableDatabase();
+        rotaController = new RotaController(sqLiteDatabase);
+
+        if(pilot == 1){
+            rotaController.edit(idrota, originF, destF);
+
+            Toast.makeText(getApplicationContext(), "Rota editada com sucesso!", Toast.LENGTH_LONG).show();
+
+            intent = new Intent(this, ListingRoutes.class);
+            startActivityForResult(intent, 0);
+        }else{
+            if(rotaController.fetchOne(originF, destF) != null){
+                Toast.makeText(getApplicationContext(), "Rota ja existe!", Toast.LENGTH_LONG).show();
+            }
+            if(!isEmptyField(originF) && !isEmptyField(destF)){
+                rotaController.insert(originF, destF);
+                Toast.makeText(getApplicationContext(), "Inserido com sucesso!", Toast.LENGTH_LONG).show();
+
+                intent = new Intent(this, ListingRoutes.class);
+                startActivityForResult(intent, 0);
+            }else {
+                Toast.makeText(getApplicationContext(), "Campo(s) vazio(s)!", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private boolean isEmptyField(String value){
+        boolean result = (TextUtils.isEmpty(value) || value.trim().isEmpty());
+
+        return result;
     }
 
     @Override
@@ -101,5 +129,4 @@ public class AddRoute extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_tab, menu);
         return true;
     }
-
 }

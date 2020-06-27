@@ -7,9 +7,16 @@ import android.os.Bundle;
 import com.example.meneses.controller.UserController;
 import com.example.meneses.database.DatabaseHelper;
 import com.example.meneses.entities.User;
+import com.example.meneses.tab.TabActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,13 +24,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Tasks extends AppCompatActivity {
-    EditText userName,userPassword,userEmail;
+    EditText userName,userPassword,verPassword,userEmail;
     TextView userLogin;
     Button regUser;
 
     UserController userController;
     SQLiteDatabase connection;
     DatabaseHelper databaseHelper;
+    FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +45,14 @@ public class Tasks extends AppCompatActivity {
 
         setUpViews();
 
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        if (firebaseAuth.getCurrentUser()!= null){
+            startActivity(new Intent(getApplicationContext(),TabActivity.class));
+            finish();
+
+        }
+
         userLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,34 +63,78 @@ public class Tasks extends AppCompatActivity {
         regUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(validate()){
 
-                    String name = userName.getText().toString();
-                    String password = userPassword.getText().toString();
-                    String email = userEmail.getText().toString();
+                String name = userName.getText().toString();
+                String password = userPassword.getText().toString();
+                String email = userEmail.getText().toString();
+                String pass2 = verPassword.getText().toString();
 
-                    User user = new User(email, name, password);
+                User user = new User(email, name, password);
 
-                    Boolean checkemail = userController.checkemail(email);
-
-                    if (checkemail){
-
-                        Boolean insert = userController.insertUser(user);
-                        if (insert){
-
-                            Toast.makeText(getApplicationContext(),"Registado com Sucesso",Toast.LENGTH_SHORT).show();
-
-                        }
-                            else{
-                            Toast.makeText(getApplicationContext(),"Nao foi possivel!",Toast.LENGTH_SHORT).show();
-                        }
+                Boolean checkemail = userController.checkemail(email);
 
 
-                    } else{
-                        Toast.makeText(getApplicationContext(),"O email ja existe!",Toast.LENGTH_SHORT).show();
-                    }
+                if (TextUtils.isEmpty(name)){
 
+                    userName.setError("Full name is Required");
+                    return;
                 }
+                if (TextUtils.isEmpty(email)){
+
+                    userEmail.setError("Email is Required");
+                    return;
+                }
+
+
+                if (TextUtils.isEmpty(password)){
+                    userPassword.setError("Password is Required");
+                    return;
+                }
+
+                if(password.length()<6){
+
+                    userPassword.setError("Password must be more than 5 characters");
+                    return;
+                }
+
+                if (!password.equals(pass2)){
+                    verPassword.setError("Password must be the same");
+                    return;
+                }
+
+
+                firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            Toast.makeText(Tasks.this,"User Created.",Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+
+                        }else {
+                            Toast.makeText(Tasks.this,"Error! "+ task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+
+//                    if (checkemail){
+//
+//                        Boolean insert = userController.insertUser(user);
+//                        if (insert){
+//
+//                            Toast.makeText(getApplicationContext(),"Registado com Sucesso",Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                            else{
+//                            Toast.makeText(getApplicationContext(),"Nao foi possivel!",Toast.LENGTH_SHORT).show();
+//                        }
+//
+//
+//                    } else{
+//                        Toast.makeText(getApplicationContext(),"O email ja existe!",Toast.LENGTH_SHORT).show();
+//                    }
+
+
             }
         });
     }
@@ -102,10 +162,11 @@ public class Tasks extends AppCompatActivity {
     public void setUpViews() {
 
         userName = findViewById(R.id.name);
-        userPassword = findViewById(R.id.password);
+        userPassword = findViewById(R.id.pass);
         userEmail = findViewById(R.id.email);
         userLogin = findViewById(R.id.tvUserLogin);
         regUser = findViewById(R.id.btRegister);
+        verPassword = findViewById(R.id.password2);
 
     }
 }

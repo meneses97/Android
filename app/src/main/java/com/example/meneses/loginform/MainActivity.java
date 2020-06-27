@@ -264,7 +264,7 @@ public class MainActivity extends FragmentActivity implements Serializable {
     public void setUpViews() {
 
         userName = findViewById(R.id.username);
-        password = findViewById(R.id.password);
+        password = findViewById(R.id.pass);
         login = findViewById(R.id.login);
 
     }

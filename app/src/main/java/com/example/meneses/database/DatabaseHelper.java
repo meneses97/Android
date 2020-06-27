@@ -17,7 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(ScriptDDL.createUserTable());
-        db.execSQL("INSERT INTO user (email, name, password) VALUES ('d','Aderito', '12')");
+        db.execSQL("INSERT INTO user (email, name, password) VALUES ('d@gmail.com','Aderito', '12')");
         db.execSQL("INSERT INTO user (email, name, password) VALUES ('admin@gmail.com','Josue', '00011')");
 
         db.execSQL(ScriptDDL.createRotaTable());

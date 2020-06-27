@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.meneses.loginform.R;
 
@@ -48,9 +49,10 @@ public class MainMaps extends Fragment {
         timetable_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Timetable.class);
-
-                startActivity(intent);
+                Toast.makeText(getContext(), "Em construcao!", Toast.LENGTH_LONG).show();
+//                Intent intent = new Intent(getActivity(), Timetable.class);
+//
+//                startActivity(intent);
             }
         });
 

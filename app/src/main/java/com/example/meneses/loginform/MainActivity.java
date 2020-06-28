@@ -11,8 +11,8 @@ import androidx.fragment.app.FragmentActivity;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.example.meneses.controller.UserController;
 import com.example.meneses.database.DatabaseHelper;
 import com.example.meneses.tab.TabActivity;
-import com.example.meneses.weather.Weather;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -42,7 +41,7 @@ public class MainActivity extends FragmentActivity implements Serializable {
 
     Button login;
     GoogleSignInClient mGoogleSignInClient;
-    TextView userName,password;
+    TextView userEmail,password;
     Boolean mLocationPermissionGranted;
     int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION =1;
 
@@ -61,6 +60,11 @@ public class MainActivity extends FragmentActivity implements Serializable {
 
         databaseHelper = new DatabaseHelper(this);
         mAuth = FirebaseAuth.getInstance();
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Processing...");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
 
         setUpViews();
         getLocationPermission();
@@ -73,28 +77,52 @@ public class MainActivity extends FragmentActivity implements Serializable {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = userName.getText().toString();
+                String email = userEmail.getText().toString();
                 String passwd = password.getText().toString();
 
-                connection = databaseHelper.getReadableDatabase();
+                if (TextUtils.isEmpty(email)){
 
-                userController = new UserController(connection);
-
-                Boolean isAccount = userController.checkAccount(email,passwd);
-
-                if (isAccount){
-                    Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_LONG).show();
-                    //startActivity(new Intent(MainActivity.this,MainMapsActivity.class));
-                    Intent intent = new Intent(MainActivity.this,TabActivity.class);
-
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(getApplicationContext(),"Nao Inventa bro!",Toast.LENGTH_LONG).show();
+                    userEmail.setError("Email is Required");
+                    return;
                 }
+
+                if (TextUtils.isEmpty(passwd)){
+                    password.setError("Password is Required");
+                    return;
+                }
+                mProgress.show();
+                mAuth.signInWithEmailAndPassword(email,passwd).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            Toast.makeText(MainActivity.this,"Logged in successfuly",Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(),TabActivity.class));
+                        }else {
+                            Toast.makeText(MainActivity.this,"Error! "+ task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    }
+                });
+//                connection = databaseHelper.getReadableDatabase();
+//
+//                userController = new UserController(connection);
+//
+//                Boolean isAccount = userController.checkAccount(email,passwd);
+//
+//                if (isAccount){
+//                    Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_LONG).show();
+//                    //startActivity(new Intent(MainActivity.this,MainMapsActivity.class));
+//                    Intent intent = new Intent(MainActivity.this,TabActivity.class);
+//
+//                    startActivity(intent);
+//                }else{
+//                    Toast.makeText(getApplicationContext(),"Nao Inventa bro!",Toast.LENGTH_LONG).show();
+//                }
             }
         });
 
-         findViewById(R.id.tvRegister).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.tvRegister).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,Tasks.class));
@@ -111,11 +139,6 @@ public class MainActivity extends FragmentActivity implements Serializable {
             }
         });
 
-        mProgress = new ProgressDialog(this);
-        mProgress.setTitle("Processing...");
-        mProgress.setMessage("Please wait...");
-        mProgress.setCancelable(false);
-        mProgress.setIndeterminate(true);
 
 
     }
@@ -263,7 +286,7 @@ public class MainActivity extends FragmentActivity implements Serializable {
 
     public void setUpViews() {
 
-        userName = findViewById(R.id.username);
+        userEmail = findViewById(R.id.username);
         password = findViewById(R.id.pass);
         login = findViewById(R.id.login);
 

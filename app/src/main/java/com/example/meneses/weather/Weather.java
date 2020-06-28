@@ -107,7 +107,6 @@ public class Weather extends Fragment {
                                 if (location == null) {
                                     requestNewLocationData();
                                 } else {
-                                    requestNewLocationData();
                                     LAT = location.getLatitude()+"";
                                     LON = location.getLongitude()+"";
                                     new weatherTask().execute();

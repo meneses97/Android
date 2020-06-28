@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.meneses.database.DatabaseHelper;
 import com.example.meneses.entities.Rota;
@@ -39,12 +40,18 @@ public class ModalBottomSheet extends BottomSheetDialogFragment {
         Button btn_remove = view.findViewById(R.id.btn_remove);
         Button btn_edit = view.findViewById(R.id.btn_edit);
         Bundle bundle = getArguments();
+        String str;
+        String[] strings;
 
         //buscando rota da actividade ListingRoutes
         str = bundle.getString("Rota");
         strings = str.split("#");
 
         databaseHelper = new DatabaseHelper(getContext());
+        sqLiteDatabase = databaseHelper.getReadableDatabase();
+        rotaController = new RotaController(sqLiteDatabase);
+
+        rota = rotaController.fetchOne(strings[0], strings[1]);
 
         btn_remove.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +59,7 @@ public class ModalBottomSheet extends BottomSheetDialogFragment {
                 sqLiteDatabase = databaseHelper.getWritableDatabase();
                 rotaController = new RotaController(sqLiteDatabase);
 
-                rotaController.remove(strings[0], strings[1]);
+                rotaController.remove(rota);
                 Intent intent = new Intent(getContext(), ListingRoutes.class);
                 startActivityForResult(intent, 0);
             }
@@ -61,16 +68,13 @@ public class ModalBottomSheet extends BottomSheetDialogFragment {
         btn_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                sqLiteDatabase = databaseHelper.getWritableDatabase();
-//                rotaController = new RotaController(sqLiteDatabase);
-//                Bundle bundle1 = new Bundle();
-//                rota = rotaController.fetchOne(strings[0], strings[1]);
-//
-//                Intent intent = new Intent(getContext(), AddRoute.class);
-//                bundle1.putString("ROTA", rota.getOrigem()+"#"+rota.getDestino());
-//                intent.putExtras(bundle1);
-//
-//                startActivityForResult(intent,0);
+                Bundle bundle1 = new Bundle();
+                bundle1.putString("ROTA", rota.getOrigem()+"#"+rota.getDestino());
+
+                Intent intent = new Intent(getContext(), AddRoute.class);
+                intent.putExtras(bundle1);
+
+                startActivityForResult(intent,0);
             }
         });
 

@@ -12,7 +12,11 @@ public class Rota {
         this.idrota = idrota;
     }
 
-    public Rota(){
+    public Rota(Integer idrota) {
+        this.idrota = idrota;
+    }
+
+    public Rota() {
     }
 
     public Integer getIdrota() {

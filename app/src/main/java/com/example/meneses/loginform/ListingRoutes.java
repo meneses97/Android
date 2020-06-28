@@ -1,5 +1,6 @@
 package com.example.meneses.loginform;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
@@ -7,6 +8,7 @@ import com.example.meneses.controller.ModalBottomSheet;
 import com.example.meneses.controller.RotaController;
 import com.example.meneses.database.DatabaseHelper;
 import com.example.meneses.entities.Rota;
+import com.example.meneses.tab.TabActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -58,4 +60,9 @@ public class ListingRoutes extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(this, TabActivity.class);
+        startActivity(intent);
+    }
 }

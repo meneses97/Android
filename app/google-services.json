@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "611538077258",
+    "firebase_url": "https://compact-record-278616.firebaseio.com",
+    "project_id": "compact-record-278616",
+    "storage_bucket": "compact-record-278616.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:611538077258:android:ee5f8589a32d8eee19c8b3",
+        "android_client_info": {
+          "package_name": "com.example.meneses.loginform"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "611538077258-d9kfab72ru4ea7qjpvv3cmrjgl49u1tb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meneses.loginform",
+            "certificate_hash": "ef99c6d2ff294418de2b30c99e7b558c4bd10a25"
+          }
+        },
+        {
+          "client_id": "611538077258-cj8e0na65jfo6e4vumm6j9ujatruhlj8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBra5PcJMv3p_5DDXM9jeo9_hoDBmtB5b0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "611538077258-cj8e0na65jfo6e4vumm6j9ujatruhlj8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

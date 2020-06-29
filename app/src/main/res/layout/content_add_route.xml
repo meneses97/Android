@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.meneses.maps.AddRoute"
+    tools:showIn="@layout/activity_add_route">
+
+    <TextView
+        android:id="@+id/title_addNewRoute"
+        android:layout_width="127dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:text="Add New Route"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/title_origin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Origin"
+        app:layout_constraintEnd_toEndOf="@+id/title_addNewRoute"
+        app:layout_constraintStart_toStartOf="@+id/title_addNewRoute"
+        app:layout_constraintTop_toBottomOf="@+id/title_addNewRoute" />
+
+    <EditText
+        android:id="@+id/id_originField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/title_origin"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="@+id/title_origin"
+        app:layout_constraintTop_toBottomOf="@+id/title_origin" />
+
+    <TextView
+        android:id="@+id/title_dest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Destination"
+        app:layout_constraintEnd_toEndOf="@+id/id_originField"
+        app:layout_constraintStart_toStartOf="@+id/id_originField"
+        app:layout_constraintTop_toBottomOf="@+id/id_originField" />
+
+    <EditText
+        android:id="@+id/id_destField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/title_dest"
+        app:layout_constraintStart_toStartOf="@+id/title_dest"
+        app:layout_constraintTop_toBottomOf="@+id/title_dest" />
+
+    <Button
+        android:id="@+id/addNewRoute_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Add"
+        app:layout_constraintEnd_toEndOf="@+id/id_destField"
+        app:layout_constraintStart_toStartOf="@+id/id_destField"
+        app:layout_constraintTop_toBottomOf="@+id/id_destField" />
+</androidx.constraintlayout.widget.ConstraintLayout>

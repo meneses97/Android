@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">BusGeolocalizationMZ</string>
+    <string name="title_activity_first">First</string>
+    <string name="title_activity_tasks">Tasks</string>
+    <string name="action_settings">Action settings</string>
+    <string name="title_activity_traffic">Traffic</string>
+    <string name="title_activity_wether">Wether</string>
+    <string name="title_originPlace">Origin Place</string>
+    <string name="title_destinationPlace">Destination Place</string>
+    <string name="buttonTitle_search">Search!</string>
+    <string name="title_activity_timetable">Timetable</string>
+    <string name="title_timetable">Timetable</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_tabbed_maps">TabbedMapsActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_timetableControl">Timetable</string>
+    <string name="title_TraficControl">Traffic</string>
+    <string name="searchButton">Search</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_tab">TabActivity</string>
+    <string name="tab_text_1">Location</string>
+    <string name="tab_text_2">Traffic</string>
+    <string name="tab_text_3">Weather</string>
+    <string name="title_activity_main_maps_navigation">MainMapsNavigation</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="title_activity_main_maps">MainMaps</string>
+    <string name="trafficcontrol">Traffic Control</string>
+    <string name="timetableControl">Timetable</string>
+    <string name="goto_trafficControl">Search by traffic</string>
+    <string name="gotoTimetable">Search by Timetable</string>
+    <string name="title_chooseYourRoute">Choose your destination</string>
+    <string name="title_chooseOption">Choose an option</string>
+    <string name="title_sisGeo">Bus Geolocalization MZ</string>
+    <string name="title_activity_weather">Weather</string>
+    <string name="addNewRoute">Add new route</string>
+    <string name="title_activity_add_route">AddRoute</string>
+    <string name="title_viewRotas">View Routes</string>
+    <string name="title_activity_list_routes">ListRoutes</string>
+    <string name="title_activity_listing_routes">ListingRoutes</string>
+    <string name="title_registeredRoutes">Registered routes</string>
+    <string name="title_activity_location">Location</string>
+</resources>

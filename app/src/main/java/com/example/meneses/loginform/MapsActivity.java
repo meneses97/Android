@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.meneses.thread.UpdateLocation;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,6 +32,9 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        UpdateLocation updateLocation = new UpdateLocation(143,getActivity());
+        new Thread(updateLocation).start();
     }
 
            @Nullable
@@ -68,7 +72,10 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Google
 
            @Override
            public boolean onMyLocationButtonClick() {
-               return false;
+
+               UpdateLocation updateLocation = new UpdateLocation(143,getActivity());
+               new Thread(updateLocation).start();
+                return false;
            }
 
            @Override

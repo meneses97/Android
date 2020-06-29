@@ -52,8 +52,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Thread.sleep;
+
 public class Location extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener {
+        GoogleMap.OnMyLocationClickListener,GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
 
     private GoogleMap mMap;
     Boolean mLocationPermissionGranted;
@@ -72,6 +74,8 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
         mapFragment.getMapAsync(this);
 
         mDb = FirebaseFirestore.getInstance();
+
+
     }
 
 
@@ -103,6 +107,24 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
         final List <LatLng> locations = new ArrayList<>();
         final LatLng lng = new LatLng(0,0);
 
+        updateLocation();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+            mMap.setOnMyLocationButtonClickListener(this);
+            mMap.setOnMyLocationClickListener(this);
+            mMap.setOnMapClickListener(this);
+            mMap.setOnMapLongClickListener(this);
+
+//            mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+
+        }
+
+    }
+
+    public void updateLocation(){
         mDb.collection("User Locations")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -125,19 +147,6 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
                         }
                     }
                 });
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-            mMap.setOnMyLocationButtonClickListener(this);
-            mMap.setOnMyLocationClickListener(this);
-            LatLng sydney = new LatLng(-34, 151);
-
-//            mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-
-        }
-
     }
 
     private void updateLocationUI() {
@@ -207,4 +216,15 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
     public void onMyLocationClick(@NonNull android.location.Location location) {
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        updateLocation();
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+
+    }
+
 }

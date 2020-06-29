@@ -106,11 +106,12 @@ public class Weather extends Fragment {
 
 
 
-//        new weatherTask().execute();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         mDb = FirebaseFirestore.getInstance();
-//        getUserDetails();
+        runInBackground();
         getLastLocation();
+        new updateLocation().execute();
+
 
         return view;
     }
@@ -135,6 +136,18 @@ public class Weather extends Fragment {
 
 
 
+
+    void runInBackground() {
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                getLastLocation();
+
+            }
+        }).start();
+    }
     @SuppressLint("MissingPermission")
     private void getLastLocation(){
         if (checkPermissions()) {
@@ -248,6 +261,25 @@ public class Weather extends Fragment {
             getLastLocation();
         }
 
+    }
+
+    class updateLocation extends AsyncTask<String,Void,String>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            getLastLocation();
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            getLastLocation();
+        }
     }
 
 

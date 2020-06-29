@@ -3,6 +3,7 @@ package com.example.meneses.tab;
 import com.example.meneses.loginform.MainActivity;
 import com.example.meneses.loginform.MapsActivity;
 import com.example.meneses.maps.MainMaps;
+import com.example.meneses.thread.UpdateLocation;
 import com.example.meneses.weather.Weather;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -69,6 +70,9 @@ public class TabActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
+
+
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

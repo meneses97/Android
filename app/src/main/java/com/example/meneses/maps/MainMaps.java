@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.meneses.loginform.ListingRoutes;
+import com.example.meneses.thread.UpdateLocation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -36,6 +37,9 @@ public class MainMaps extends Fragment {
         traffic_button = view.findViewById(R.id.traffic_btn);
         addNewRoute_button = view.findViewById(R.id.btn_addRotas);
         viewRoutes_button = view.findViewById(R.id.btn_viewRotas);
+
+        UpdateLocation updateLocation = new UpdateLocation(143,getActivity());
+        new Thread(updateLocation).start();
 
         traffic_button.setOnClickListener(new View.OnClickListener() {
             @Override

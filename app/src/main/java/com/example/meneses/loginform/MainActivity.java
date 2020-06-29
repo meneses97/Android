@@ -299,6 +299,8 @@ public class MainActivity extends FragmentActivity implements Serializable {
 
 
 
+
+
     private void getLocationPermission() {
         /*
          * Request location permission, so that we can get the location of the

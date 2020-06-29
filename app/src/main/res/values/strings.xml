@@ -44,4 +44,5 @@
     <string name="title_activity_list_routes">ListRoutes</string>
     <string name="title_activity_listing_routes">ListingRoutes</string>
     <string name="title_registeredRoutes">Registered routes</string>
+    <string name="title_activity_location">Location</string>
 </resources>

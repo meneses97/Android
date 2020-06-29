@@ -238,7 +238,6 @@ public class MainActivity extends FragmentActivity implements Serializable {
                             Log.d("Success", "signInWithCredential:success");
                             final FirebaseUser user = mAuth.getCurrentUser();
 
-                            CollectionReference citiesRef = mDb.collection("users");
 
 // Create a query against the collection.
 
@@ -285,34 +284,6 @@ public class MainActivity extends FragmentActivity implements Serializable {
                                             }
                                         }
                                     });
-//                            Query emails = mDb.collection("users").whereEqualTo("email", true);
-
-
-//                            if (pilot == false) {
-//                                String name = user.getDisplayName();
-//                                String email = user.getEmail();
-//
-//
-//                                Map<String, Object> mUser = new HashMap<>();
-//                                mUser.put("email", email);
-//                                mUser.put("name", name);
-//
-//// Add a new document with a generated ID
-//                                mDb.collection("users")
-//                                        .add(mUser)
-//                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                                            @Override
-//                                            public void onSuccess(DocumentReference documentReference) {
-//                                                Log.d("", "DocumentSnapshot added with ID: " + documentReference.getId());
-//                                            }
-//                                        })
-//                                        .addOnFailureListener(new OnFailureListener() {
-//                                            @Override
-//                                            public void onFailure(@NonNull Exception e) {
-//                                                Log.w("", "Error adding document", e);
-//                                            }
-//                                        });
-//                            }
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.

@@ -1,5 +1,6 @@
 package com.example.meneses.maps;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
@@ -9,11 +10,11 @@ import com.example.meneses.entities.Rota;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.meneses.loginform.R;
@@ -30,6 +31,7 @@ public class Traffic extends AppCompatActivity implements AdapterView.OnItemSele
     RotaController rotaController;
     SQLiteDatabase connection;
     DatabaseHelper databaseHelper;
+    Button searchBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,16 @@ public class Traffic extends AppCompatActivity implements AdapterView.OnItemSele
 
         origin_spinner.setOnItemSelectedListener(this);
         dest_spinner.setOnItemSelectedListener(this);
+
+        searchBtn = findViewById(R.id.btn_searchBus);
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Traffic.this,Location.class);
+                startActivity(intent);
+            }
+        });
 
         setSpinnerValues();
     }

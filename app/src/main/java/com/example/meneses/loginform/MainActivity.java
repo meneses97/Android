@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.meneses.controller.UserController;
 import com.example.meneses.database.DatabaseHelper;
+import com.example.meneses.entities.User;
 import com.example.meneses.tab.TabActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -27,14 +28,25 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends FragmentActivity implements Serializable {
 
@@ -52,6 +64,9 @@ public class MainActivity extends FragmentActivity implements Serializable {
     private long backPressedTime;
 
     private ProgressDialog mProgress;
+    private FirebaseFirestore mDb;
+    boolean pilot = false;
+    User eUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +89,9 @@ public class MainActivity extends FragmentActivity implements Serializable {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+        mDb = FirebaseFirestore.getInstance();
+        eUser = new User();
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +113,7 @@ public class MainActivity extends FragmentActivity implements Serializable {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
+
                             Toast.makeText(MainActivity.this,"Logged in successfuly",Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(),TabActivity.class));
                         }else {
@@ -104,21 +123,6 @@ public class MainActivity extends FragmentActivity implements Serializable {
                         }
                     }
                 });
-//                connection = databaseHelper.getReadableDatabase();
-//
-//                userController = new UserController(connection);
-//
-//                Boolean isAccount = userController.checkAccount(email,passwd);
-//
-//                if (isAccount){
-//                    Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_LONG).show();
-//                    //startActivity(new Intent(MainActivity.this,MainMapsActivity.class));
-//                    Intent intent = new Intent(MainActivity.this,TabActivity.class);
-//
-//                    startActivity(intent);
-//                }else{
-//                    Toast.makeText(getApplicationContext(),"Nao Inventa bro!",Toast.LENGTH_LONG).show();
-//                }
             }
         });
 
@@ -140,6 +144,23 @@ public class MainActivity extends FragmentActivity implements Serializable {
         });
 
 
+
+    }
+
+    public void saveUser(){
+
+        if(eUser != null){
+            DocumentReference locationRef = mDb.collection("users")
+                    .document(FirebaseAuth.getInstance().getUid());
+            locationRef.set(eUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()){
+                        Log.d("","User saved!"+eUser.getName());
+                    }
+                }
+            });
+        }
 
     }
 
@@ -205,7 +226,7 @@ public class MainActivity extends FragmentActivity implements Serializable {
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d("Error", "firebaseAuthWithGoogle:" + acct.getId());
+        Log.d("Success", "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -214,8 +235,84 @@ public class MainActivity extends FragmentActivity implements Serializable {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d("Error", "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            Log.d("Success", "signInWithCredential:success");
+                            final FirebaseUser user = mAuth.getCurrentUser();
+
+                            CollectionReference citiesRef = mDb.collection("users");
+
+// Create a query against the collection.
+
+                            mDb.collection("users").whereEqualTo("email",user.getEmail())
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    if(user.getEmail().equals(document.getData().get("email").toString())){
+                                                        pilot = true;
+                                                    }
+                                                    Log.d("", pilot + " => " + document.getData().get("email"));
+                                                }
+                                                if (pilot == false) {
+                                                    Log.d("", pilot+"");
+                                                    String name = user.getDisplayName();
+                                                    String email = user.getEmail();
+
+
+                                                    Map<String, Object> mUser = new HashMap<>();
+                                                    mUser.put("email", email);
+                                                    mUser.put("name", name);
+
+// Add a new document with a generated ID
+                                                    mDb.collection("users")
+                                                            .add(mUser)
+                                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                @Override
+                                                                public void onSuccess(DocumentReference documentReference) {
+                                                                    Log.d("", "DocumentSnapshot added with ID: " + documentReference.getId());
+                                                                }
+                                                            })
+                                                            .addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Log.w("", "Error adding document", e);
+                                                                }
+                                                            });
+                                                }
+                                            } else {
+                                                Log.w("", "Error getting documents.", task.getException());
+                                            }
+                                        }
+                                    });
+//                            Query emails = mDb.collection("users").whereEqualTo("email", true);
+
+
+//                            if (pilot == false) {
+//                                String name = user.getDisplayName();
+//                                String email = user.getEmail();
+//
+//
+//                                Map<String, Object> mUser = new HashMap<>();
+//                                mUser.put("email", email);
+//                                mUser.put("name", name);
+//
+//// Add a new document with a generated ID
+//                                mDb.collection("users")
+//                                        .add(mUser)
+//                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                                            @Override
+//                                            public void onSuccess(DocumentReference documentReference) {
+//                                                Log.d("", "DocumentSnapshot added with ID: " + documentReference.getId());
+//                                            }
+//                                        })
+//                                        .addOnFailureListener(new OnFailureListener() {
+//                                            @Override
+//                                            public void onFailure(@NonNull Exception e) {
+//                                                Log.w("", "Error adding document", e);
+//                                            }
+//                                        });
+//                            }
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.

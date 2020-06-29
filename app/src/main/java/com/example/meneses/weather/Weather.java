@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,21 +26,35 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.meneses.entities.User;
+import com.example.meneses.entities.UserLocation;
 import com.example.meneses.loginform.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+//import com.google.instrumentation.stats.Tag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class Weather extends Fragment {
 
@@ -51,6 +66,9 @@ public class Weather extends Fragment {
 
     int PERMISSION_ID = 44;
     FusedLocationProviderClient mFusedLocationClient;
+
+    private UserLocation userLocation;
+    private FirebaseFirestore mDb;
 
     TextView addressTxt, updated_atTxt, statusTxt, tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
             sunsetTxt, windTxt, pressureTxt, humidityTxt;
@@ -74,6 +92,7 @@ public class Weather extends Fragment {
         humidityTxt = view.findViewById(R.id.humidity);
 
 
+
         Button refreshBtn=(Button)view.findViewById(R.id.detail_refresh_btn);
         final AnimationDrawable d=(AnimationDrawable)refreshBtn.getCompoundDrawables()[0];
         refreshBtn.setOnClickListener(new View.OnClickListener() {
@@ -89,11 +108,32 @@ public class Weather extends Fragment {
 
 //        new weatherTask().execute();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
+        mDb = FirebaseFirestore.getInstance();
+//        getUserDetails();
         getLastLocation();
 
         return view;
     }
+
+
+    public void saveUserLocation(){
+
+        if(userLocation != null){
+            DocumentReference locationRef = mDb.collection("User Locations")
+                    .document(FirebaseAuth.getInstance().getUid());
+            locationRef.set(userLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()){
+                        Log.d("","saved!");
+                    }
+                }
+            });
+        }
+
+    }
+
+
 
     @SuppressLint("MissingPermission")
     private void getLastLocation(){
@@ -107,6 +147,22 @@ public class Weather extends Fragment {
                                 if (location == null) {
                                     requestNewLocationData();
                                 } else {
+
+                                    LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+                                    if (userLocation==null){
+                                        userLocation = new UserLocation();}
+                                    userLocation.setGeoPoint(latLng);
+                                    userLocation.setTimestamp(new GregorianCalendar().getTime());
+
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    if (user != null) {
+                                        String name = user.getDisplayName();
+                                        String email = user.getEmail();
+                                        userLocation.setUser(new User(email,name));
+
+                                    }
+
+                                    saveUserLocation();
                                     LAT = location.getLatitude()+"";
                                     LON = location.getLongitude()+"";
                                     new weatherTask().execute();

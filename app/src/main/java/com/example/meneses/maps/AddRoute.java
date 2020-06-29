@@ -99,20 +99,30 @@ public class AddRoute extends AppCompatActivity {
 
             Toast.makeText(getApplicationContext(), "Editted successfully!", Toast.LENGTH_LONG).show();
 
+            Toast.makeText(getApplicationContext(), "Rota editada com sucesso!", Toast.LENGTH_LONG).show();
+
             intent = new Intent(this, ListingRoutes.class);
             startActivityForResult(intent, 0);
         }else{
             if(rotaController.fetchOne(originF, destF) != null){
+
                 Toast.makeText(getApplicationContext(), "Route already exists!", Toast.LENGTH_LONG).show();
             }
             if(!isEmptyField(originF) && !isEmptyField(destF)){
                 rotaController.insert(originF, destF);
                 Toast.makeText(getApplicationContext(), "Added successfully!", Toast.LENGTH_LONG).show();
 
+                Toast.makeText(getApplicationContext(), "Rota ja existe!", Toast.LENGTH_LONG).show();
+            }
+            if(!isEmptyField(originF) && !isEmptyField(destF)){
+                rotaController.insert(originF, destF);
+                Toast.makeText(getApplicationContext(), "Inserido com sucesso!", Toast.LENGTH_LONG).show();
+
                 intent = new Intent(this, ListingRoutes.class);
                 startActivityForResult(intent, 0);
             }else {
                 Toast.makeText(getApplicationContext(), "Empty fields!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Campo(s) vazio(s)!", Toast.LENGTH_LONG).show();
             }
         }
     }

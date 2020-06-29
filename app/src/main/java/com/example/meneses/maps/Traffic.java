@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+
 import android.widget.Toast;
 
 import com.example.meneses.loginform.R;
@@ -67,6 +68,15 @@ public class Traffic extends AppCompatActivity implements AdapterView.OnItemSele
         });
 
 
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Traffic.this,Location.class);
+                startActivity(intent);
+            }
+        });
+
+        setSpinnerValues();
     }
 
     public void setSpinnerValues(){

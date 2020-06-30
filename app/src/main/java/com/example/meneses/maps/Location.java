@@ -11,6 +11,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -79,6 +80,7 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
     }
 
 
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -91,11 +93,6 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         getLocationPermission();
 
@@ -115,9 +112,8 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
             mMap.setOnMyLocationClickListener(this);
             mMap.setOnMapClickListener(this);
             mMap.setOnMapLongClickListener(this);
-
-//            mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            mMap.setTrafficEnabled(true);
+            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
 
         }

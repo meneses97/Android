@@ -53,7 +53,7 @@ public class MainMaps extends Fragment {
         timetable_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Em construcao!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Still coding!", Toast.LENGTH_LONG).show();
 //                Intent intent = new Intent(getActivity(), Timetable.class);
 //
 //                startActivity(intent);

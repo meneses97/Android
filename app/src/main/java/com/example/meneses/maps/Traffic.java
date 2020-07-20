@@ -17,6 +17,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import android.widget.Toast;
+
 import com.example.meneses.loginform.R;
 
 import java.util.ArrayList;
@@ -49,6 +51,22 @@ public class Traffic extends AppCompatActivity implements AdapterView.OnItemSele
         dest_spinner.setOnItemSelectedListener(this);
 
         searchBtn = findViewById(R.id.btn_searchBus);
+
+        setSpinnerValues();
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(origin_spinner.getSelectedItem()!=null && dest_spinner.getSelectedItem()!=null){
+                    Intent intent = new Intent(Traffic.this,Location.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getApplicationContext()
+                            , "Routes not registered! Can't move to next step", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
 
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override

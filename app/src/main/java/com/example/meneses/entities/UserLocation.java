@@ -11,6 +11,7 @@ public class UserLocation {
 
     private Date timestamp;
     private User user;
+    private Car car;
 
     public UserLocation() {
     }
@@ -19,6 +20,14 @@ public class UserLocation {
         this.geoPoint = geoPoint;
         this.timestamp = timestamp;
         this.user = user;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
     }
 
     public LatLng getGeoPoint() {

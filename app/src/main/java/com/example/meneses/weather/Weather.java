@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.meneses.entities.Car;
 import com.example.meneses.entities.User;
 import com.example.meneses.entities.UserLocation;
 import com.example.meneses.loginform.R;
@@ -44,6 +45,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 //import com.google.instrumentation.stats.Tag;
 
 import org.json.JSONException;
@@ -58,7 +61,7 @@ import java.util.Map;
 
 public class Weather extends Fragment {
 
-    String CITY = "pemba,mz";
+
     String API = "122b3bade2fa6504d16c04f778ccfaa2";
     View view;
 
@@ -66,9 +69,6 @@ public class Weather extends Fragment {
 
     int PERMISSION_ID = 44;
     FusedLocationProviderClient mFusedLocationClient;
-
-    private UserLocation userLocation;
-    private FirebaseFirestore mDb;
 
     TextView addressTxt, updated_atTxt, statusTxt, tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
             sunsetTxt, windTxt, pressureTxt, humidityTxt;
@@ -107,31 +107,12 @@ public class Weather extends Fragment {
 
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        mDb = FirebaseFirestore.getInstance();
         runInBackground();
         getLastLocation();
         new updateLocation().execute();
 
 
         return view;
-    }
-
-
-    public void saveUserLocation(){
-
-        if(userLocation != null){
-            DocumentReference locationRef = mDb.collection("User Locations")
-                    .document(FirebaseAuth.getInstance().getUid());
-            locationRef.set(userLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()){
-                        Log.d("","saved!");
-                    }
-                }
-            });
-        }
-
     }
 
 
@@ -160,22 +141,6 @@ public class Weather extends Fragment {
                                 if (location == null) {
                                     requestNewLocationData();
                                 } else {
-
-                                    LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-                                    if (userLocation==null){
-                                        userLocation = new UserLocation();}
-                                    userLocation.setGeoPoint(latLng);
-                                    userLocation.setTimestamp(new GregorianCalendar().getTime());
-
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                    if (user != null) {
-                                        String name = user.getDisplayName();
-                                        String email = user.getEmail();
-                                        userLocation.setUser(new User(email,name));
-
-                                    }
-
-                                    saveUserLocation();
                                     LAT = location.getLatitude()+"";
                                     LON = location.getLongitude()+"";
                                     new weatherTask().execute();

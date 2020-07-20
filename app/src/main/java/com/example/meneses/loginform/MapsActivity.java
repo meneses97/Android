@@ -10,6 +10,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -37,13 +39,15 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Google
         new Thread(updateLocation).start();
     }
 
-           @Nullable
-           @Override
-           public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-               mView = inflater.inflate(R.layout.activity_maps,container,false);
 
-               return mView;
-           }
+
+       @Nullable
+       @Override
+       public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+           mView = inflater.inflate(R.layout.activity_maps,container,false);
+
+           return mView;
+       }
 
            @Override
            public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -65,6 +69,8 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Google
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
+            mMap.setTrafficEnabled(true);
+            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
         }
 
@@ -73,8 +79,8 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Google
            @Override
            public boolean onMyLocationButtonClick() {
 
-               UpdateLocation updateLocation = new UpdateLocation(143,getActivity());
-               new Thread(updateLocation).start();
+//               UpdateLocation updateLocation = new UpdateLocation(143,getActivity());
+//               new Thread(updateLocation).start();
                 return false;
            }
 

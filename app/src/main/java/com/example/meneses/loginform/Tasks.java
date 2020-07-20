@@ -1,5 +1,6 @@
 package com.example.meneses.loginform;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -33,10 +34,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Tasks extends AppCompatActivity {
-    EditText userName,userPassword,verPassword,userEmail;
+    EditText userName,userPassword,verPassword,userEmail,carId,matId,licId;
     TextView userLogin;
     Button regUser;
-
+    private ProgressDialog mProgress;
     User user;
     private FirebaseFirestore mDb;
 
@@ -52,6 +53,11 @@ public class Tasks extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
         connection = databaseHelper.getWritableDatabase();
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Processing...");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
 
         userController = new UserController(connection);
 
@@ -60,13 +66,6 @@ public class Tasks extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         mDb = FirebaseFirestore.getInstance();
         user = new User();
-
-//        if (firebaseAuth.getCurrentUser()!= null){
-//            startActivity(new Intent(getApplicationContext(),TabActivity.class));
-//            finish();
-//
-//        }
-
         userLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,9 +82,10 @@ public class Tasks extends AppCompatActivity {
                 final String email = userEmail.getText().toString();
                 String pass2 = verPassword.getText().toString();
 
-                User user = new User(email, name, password);
+                final String car =  carId.getText().toString();
+                final String matricula = matId.getText().toString();
+                final String lic = licId.getText().toString();
 
-                Boolean checkemail = userController.checkemail(email);
 
 
                 if (TextUtils.isEmpty(name)) {
@@ -116,6 +116,16 @@ public class Tasks extends AppCompatActivity {
                     return;
                 }
 
+                if(TextUtils.isEmpty(car)){
+                    carId.setError("Required!");
+                }
+                if(TextUtils.isEmpty(matricula)){
+                    carId.setError("Required!");
+                }
+                if(TextUtils.isEmpty(lic)){
+                    carId.setError("Required!");
+                }
+                mProgress.show();
 
                 firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -126,6 +136,9 @@ public class Tasks extends AppCompatActivity {
                             Map<String, Object> mUser = new HashMap<>();
                             mUser.put("email", email);
                             mUser.put("name", name);
+                            mUser.put("matricula",matricula);
+                            mUser.put("marca",car);
+                            mUser.put("licenca",lic);
 
 // Add a new document with a generated ID
                             mDb.collection("users")
@@ -148,28 +161,14 @@ public class Tasks extends AppCompatActivity {
 
                         } else {
                             Toast.makeText(Tasks.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            mProgress.setCanceledOnTouchOutside(true);
+                            mProgress.setCancelable(true);
 
                         }
                     }
                 });
 
 
-//                    if (checkemail){
-//
-//                        Boolean insert = userController.insertUser(user);
-//                        if (insert){
-//
-//                            Toast.makeText(getApplicationContext(),"Registado com Sucesso",Toast.LENGTH_SHORT).show();
-//
-//                        }
-//                            else{
-//                            Toast.makeText(getApplicationContext(),"Nao foi possivel!",Toast.LENGTH_SHORT).show();
-//                        }
-//
-//
-//                    } else{
-//                        Toast.makeText(getApplicationContext(),"O email ja existe!",Toast.LENGTH_SHORT).show();
-//                    }
 
 
             }
@@ -195,24 +194,6 @@ public class Tasks extends AppCompatActivity {
 
     }
 
-    private Boolean validate(){
-
-        Boolean result = false;
-
-        String name = userName.getText().toString();
-        String password = userPassword.getText().toString();
-        String email = userEmail.getText().toString();
-
-        if (name.isEmpty() || password.isEmpty() || email.isEmpty()){
-
-            Toast.makeText(this,"Por favor! Introduza todos detalhes,",Toast.LENGTH_SHORT).show();
-
-        }else {
-
-            result = true;
-        }
-        return result;
-    }
 
 
     public void setUpViews() {
@@ -223,6 +204,9 @@ public class Tasks extends AppCompatActivity {
         userLogin = findViewById(R.id.tvUserLogin);
         regUser = findViewById(R.id.btRegister);
         verPassword = findViewById(R.id.password2);
+        carId = findViewById(R.id.carid);
+        matId = findViewById(R.id.matId);
+        licId = findViewById(R.id.licId);
 
     }
 }

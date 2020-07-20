@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.meneses.entities.Car;
 import com.example.meneses.entities.User;
 import com.example.meneses.entities.UserLocation;
 import com.example.meneses.weather.Weather;
@@ -28,6 +29,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.GregorianCalendar;
 
@@ -44,6 +47,7 @@ public class UpdateLocation extends Fragment implements Runnable {
     private UserLocation userLocation;
     private FirebaseFirestore mDb;
     private Activity activity;
+    LatLng lat;
 
     int PERMISSION_ID = 44;
     FusedLocationProviderClient mFusedLocationClient;
@@ -69,16 +73,37 @@ public class UpdateLocation extends Fragment implements Runnable {
     public void saveUserLocation(){
 
         if(userLocation != null){
-            DocumentReference locationRef = mDb.collection("User Locations")
-                    .document(FirebaseAuth.getInstance().getUid());
-            locationRef.set(userLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()){
-                        Log.d("","saved!");
+
+            try {
+                DocumentReference locationRef = mDb.collection("User Locations")
+                        .document(FirebaseAuth.getInstance().getUid());
+                locationRef.update("geoPoint",lat,"timestamp",new GregorianCalendar().getTime()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            Log.d("","Updated!");
+                        }else{
+                            DocumentReference locationRef = mDb.collection("User Locations")
+                                    .document(FirebaseAuth.getInstance().getUid());
+                            locationRef.set(userLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()){
+                                        Log.d("","saved!");
+                                    }
+                                }
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }catch (Exception e){
+
+            }
+
+
+
+
+
         }
 
     }
@@ -112,18 +137,56 @@ public class UpdateLocation extends Fragment implements Runnable {
                                 } else {
 
                                     LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+                                    lat = new LatLng(location.getLatitude(),location.getLongitude());
                                     if (userLocation==null){
                                         userLocation = new UserLocation();}
                                     userLocation.setGeoPoint(latLng);
                                     userLocation.setTimestamp(new GregorianCalendar().getTime());
 
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
                                         String name = user.getDisplayName();
                                         String email = user.getEmail();
-                                        userLocation.setUser(new User(email,name));
+//                                        userLocation.setUser(new User(email,name));
+                                        mDb.collection("users").whereEqualTo("email",user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                String marca="";
+                                                String matricula="";
+                                                String licenca="";
+                                                if (task.isSuccessful()){
+                                                    for (QueryDocumentSnapshot document : task.getResult()){
+
+                                                        if (document.contains("marca")
+                                                                && document.contains("matricula")
+                                                                && document.contains("licenca")) {
+                                                            marca = document.getData().get("marca").toString();
+                                                            matricula = document.getData().get("matricula").toString();
+                                                            licenca = document.getData().get("licenca").toString();
+
+                                                            Car car = new Car();
+                                                            car.setMarca(marca);
+                                                            car.setMatricula(matricula);
+                                                            car.setLicenca(licenca);
+                                                            userLocation.setCar(car);
+                                                            userLocation.setUser(new User(user.getEmail(),document.getData().get("name").toString()));
+
+                                                        }else{
+                                                            userLocation.setUser(new User(user.getEmail(),user.getDisplayName()));
+
+                                                        }
+
+                                                        break;
+
+                                                    }
+
+                                                }
+                                            }
+                                        });
 
                                     }
+
+
 
                                     saveUserLocation();
                                 }

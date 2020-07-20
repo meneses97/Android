@@ -101,8 +101,6 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
 
 // Create a query against the collection.
 
-        final List <LatLng> locations = new ArrayList<>();
-        final LatLng lng = new LatLng(0,0);
 
         updateLocation();
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -121,22 +119,28 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
     }
 
     public void updateLocation(){
+
+
         mDb.collection("User Locations")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         LatLng lng;
+                        String marca="",matricula="";
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
-//                                locations.add((LatLng) document.get("geoPoint"));
+                                Map<String,Object> car = (HashMap) document.get("car");
                                 Map<String,Object> user = (HashMap) document.get("user");
                                 Map<String,Object> list = (HashMap)document.get("geoPoint");
                                 lng = new LatLng(Double.parseDouble( list.get("latitude").toString()),Double.parseDouble(list.get("longitude").toString()));
-
-                                mMap.addMarker(new MarkerOptions().position(lng).title(user.get("name")+""));
-                                Log.d("", " => " + document.get("geoPoint")+"-------"+list.get("latitude")+" ****"+user.get("email"));
+                                if (car!= null){
+                                    marca = car.get("marca").toString();
+                                    matricula = car.get("matricula").toString();
+                                    mMap.addMarker(new MarkerOptions().position(lng).title(user.get("name")+"*"+marca+"*"+matricula )).showInfoWindow();
+                                }
+//                                mMap.addMarker(new MarkerOptions().position(lng).title(user.get("name")+"*"+marca+"*"+matricula )).showInfoWindow();
                             }
                         } else {
                             Log.w("", "Error getting documents.", task.getException());

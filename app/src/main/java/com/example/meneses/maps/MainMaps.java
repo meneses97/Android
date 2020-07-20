@@ -37,10 +37,6 @@ public class MainMaps extends Fragment {
         traffic_button = view.findViewById(R.id.traffic_btn);
         addNewRoute_button = view.findViewById(R.id.btn_addRotas);
         viewRoutes_button = view.findViewById(R.id.btn_viewRotas);
-
-        UpdateLocation updateLocation = new UpdateLocation(143,getActivity());
-        new Thread(updateLocation).start();
-
         traffic_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

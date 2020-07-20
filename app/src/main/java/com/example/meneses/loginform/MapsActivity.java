@@ -78,8 +78,8 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Google
            @Override
            public boolean onMyLocationButtonClick() {
 
-               UpdateLocation updateLocation = new UpdateLocation(143,getActivity());
-               new Thread(updateLocation).start();
+//               UpdateLocation updateLocation = new UpdateLocation(143,getActivity());
+//               new Thread(updateLocation).start();
                 return false;
            }
 

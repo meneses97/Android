@@ -4,17 +4,20 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +67,7 @@ public class MainActivity extends FragmentActivity implements Serializable {
     private long backPressedTime;
 
     private ProgressDialog mProgress;
+    private ProgressBar progressBar;
     private FirebaseFirestore mDb;
     boolean pilot = false;
     User eUser;
@@ -82,6 +86,7 @@ public class MainActivity extends FragmentActivity implements Serializable {
         mProgress.setIndeterminate(true);
 
         setUpViews();
+
         getLocationPermission();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id))
@@ -108,7 +113,8 @@ public class MainActivity extends FragmentActivity implements Serializable {
                     password.setError("Password is Required");
                     return;
                 }
-                mProgress.show();
+                progressBar.setIndeterminate(true);
+                progressBar.setProgress(100);
                 mAuth.signInWithEmailAndPassword(email,passwd).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -147,27 +153,10 @@ public class MainActivity extends FragmentActivity implements Serializable {
 
     }
 
-    public void saveUser(){
-
-        if(eUser != null){
-            DocumentReference locationRef = mDb.collection("users")
-                    .document(FirebaseAuth.getInstance().getUid());
-            locationRef.set(eUser).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()){
-                        Log.d("","User saved!"+eUser.getName());
-                    }
-                }
-            });
-        }
-
-    }
-
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-
+        progressBar.setIndeterminate(false);
         if (backPressedTime +2000>System.currentTimeMillis()){
 //            backPressedTime=0;
             Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -180,17 +169,6 @@ public class MainActivity extends FragmentActivity implements Serializable {
             Toast.makeText(getBaseContext(),"Press back again to exit",Toast.LENGTH_SHORT).show();
         }
         backPressedTime = System.currentTimeMillis();
-    }
-
-    private void signOut() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        finish();
-                    }
-                });
-
     }
 
     private void revokeAccess() {
@@ -207,13 +185,13 @@ public class MainActivity extends FragmentActivity implements Serializable {
                 });
     }
 
+
     private void signIn() {
-//        mGoogleSignInClient.signOut();
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-
-
         startActivityForResult(signInIntent, 1);
-        mProgress.show();
+//        mProgress.show();
+        progressBar.setIndeterminate(true);
+        progressBar.setProgress(100);
     }
 
     @Override
@@ -359,6 +337,7 @@ public class MainActivity extends FragmentActivity implements Serializable {
         userEmail = findViewById(R.id.username);
         password = findViewById(R.id.pass);
         login = findViewById(R.id.login);
+        progressBar = findViewById(R.id.progressBar);
 
     }
 

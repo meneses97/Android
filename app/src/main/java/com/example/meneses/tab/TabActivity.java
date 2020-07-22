@@ -261,10 +261,10 @@ public class TabActivity extends AppCompatActivity {
                     MainMaps frag2 = new MainMaps();
                     return frag2;
                 }
-                case 2:{
+                /*case 2:{
                     Weather frag3 = new Weather();
                     return frag3;
-                }
+                }*/
                 default:return null;
 
             }
@@ -274,7 +274,7 @@ public class TabActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
     }
 }

@@ -5,17 +5,17 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import com.example.meneses.controller.RotaController;
 import com.example.meneses.controller.UserController;
 import com.example.meneses.database.DatabaseHelper;
+import com.example.meneses.entities.Rota;
 import com.example.meneses.entities.User;
-import com.example.meneses.tab.TabActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -25,15 +25,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Tasks extends AppCompatActivity {
+public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    Rota rota;
+    Spinner rspinner;
     EditText userName,userPassword,verPassword,userEmail,carId,matId,licId;
     TextView userLogin;
     Button regUser;
@@ -41,6 +48,7 @@ public class Tasks extends AppCompatActivity {
     User user;
     private FirebaseFirestore mDb;
 
+    RotaController rotaController;
     UserController userController;
     SQLiteDatabase connection;
     DatabaseHelper databaseHelper;
@@ -76,7 +84,6 @@ public class Tasks extends AppCompatActivity {
         regUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 final String name = userName.getText().toString();
                 String password = userPassword.getText().toString();
                 final String email = userEmail.getText().toString();
@@ -85,8 +92,6 @@ public class Tasks extends AppCompatActivity {
                 final String car =  carId.getText().toString();
                 final String matricula = matId.getText().toString();
                 final String lic = licId.getText().toString();
-
-
 
                 if (TextUtils.isEmpty(name)) {
 
@@ -98,7 +103,6 @@ public class Tasks extends AppCompatActivity {
                     userEmail.setError("Email is Required");
                     return;
                 }
-
 
                 if (TextUtils.isEmpty(password)) {
                     userPassword.setError("Password is Required");
@@ -167,13 +171,8 @@ public class Tasks extends AppCompatActivity {
                         }
                     }
                 });
-
-
-
-
             }
         });
-
     }
 
 
@@ -197,6 +196,9 @@ public class Tasks extends AppCompatActivity {
 
 
     public void setUpViews() {
+        rspinner = findViewById(R.id.r_spinner);
+
+        setSpinnerValues();
 
         userName = findViewById(R.id.name);
         userPassword = findViewById(R.id.pass);
@@ -207,6 +209,54 @@ public class Tasks extends AppCompatActivity {
         carId = findViewById(R.id.carid);
         matId = findViewById(R.id.matId);
         licId = findViewById(R.id.licId);
+    }
+
+    public void setSpinnerValues(){
+//        List<String> originList = new ArrayList<>();
+//        List<String> destList = new ArrayList<>();
+        List<String> routesList = new ArrayList<>();
+
+        connection = databaseHelper.getReadableDatabase();
+        rotaController = new RotaController(connection);
+
+        List<Rota> rotaList = rotaController.fetchAll();
+
+        for(Rota rota: rotaList){
+            routesList.add(rota.getOrigem()+"-"+rota.getDestino());
+/*            if(!originList.contains(rota.getOrigem())) {
+                originList.add(rota.getOrigem());
+            }
+            if(!destList.contains(rota.getDestino())){
+                destList.add(rota.getDestino());
+            }*/
+        }
+
+//        ArrayAdapter<String> originArrayAdapter = new ArrayAdapter<>(this,
+//                android.R.layout.simple_spinner_item, originList);
+//        ArrayAdapter<String> destArrayAdapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> routesArrayAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, routesList);
+
+//        originArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        destArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        routesArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+//        ospinner.setAdapter(originArrayAdapter);
+//        dspinner.setAdapter(destArrayAdapter);
+        rspinner.setAdapter(routesArrayAdapter);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String rotaStr = (String) parent.getSelectedItem();
+        String[] strings = rotaStr.split("-");
+
+        //Rota selecionada
+        rota = rotaController.fetchOne(strings[0],strings[1]);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }

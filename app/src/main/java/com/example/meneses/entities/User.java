@@ -3,8 +3,6 @@ package com.example.meneses.entities;
 import androidx.annotation.NonNull;
 
 public class User {
-    //Adelito please confirm it!
-
     String email, name, password;
 
     public User(String email, String name, String password) {

@@ -39,8 +39,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    Rota rota;
+
     Spinner rspinner;
+    Spinner dspinner;
     EditText userName,userPassword,verPassword,userEmail,carId,matId,licId;
     TextView userLogin;
     Button regUser;
@@ -137,12 +138,18 @@ public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelect
                         if (task.isSuccessful()) {
                             Toast.makeText(Tasks.this, "User Created.", Toast.LENGTH_SHORT).show();
 
+                            Rota rota = new Rota();
+
+                            rota.setOrigem(rspinner.getSelectedItem().toString());
+                            rota.setDestino(dspinner.getSelectedItem().toString());
+
                             Map<String, Object> mUser = new HashMap<>();
                             mUser.put("email", email);
                             mUser.put("name", name);
                             mUser.put("matricula",matricula);
                             mUser.put("marca",car);
                             mUser.put("licenca",lic);
+                            mUser.put("rota",rota);
 
 // Add a new document with a generated ID
                             mDb.collection("users")
@@ -197,6 +204,7 @@ public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelect
 
     public void setUpViews() {
         rspinner = findViewById(R.id.r_spinner);
+        dspinner = findViewById(R.id.d_spinner);
 
         setSpinnerValues();
 
@@ -212,9 +220,8 @@ public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelect
     }
 
     public void setSpinnerValues(){
-//        List<String> originList = new ArrayList<>();
-//        List<String> destList = new ArrayList<>();
-        List<String> routesList = new ArrayList<>();
+        List<String> originList = new ArrayList<>();
+        List<String> destList = new ArrayList<>();
 
         connection = databaseHelper.getReadableDatabase();
         rotaController = new RotaController(connection);
@@ -222,37 +229,30 @@ public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelect
         List<Rota> rotaList = rotaController.fetchAll();
 
         for(Rota rota: rotaList){
-            routesList.add(rota.getOrigem()+"-"+rota.getDestino());
-/*            if(!originList.contains(rota.getOrigem())) {
+            if(!originList.contains(rota.getOrigem())) {
                 originList.add(rota.getOrigem());
             }
             if(!destList.contains(rota.getDestino())){
                 destList.add(rota.getDestino());
-            }*/
+            }
         }
 
-//        ArrayAdapter<String> originArrayAdapter = new ArrayAdapter<>(this,
-//                android.R.layout.simple_spinner_item, originList);
-//        ArrayAdapter<String> destArrayAdapter = new ArrayAdapter<>(this,
-        ArrayAdapter<String> routesArrayAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, routesList);
+        ArrayAdapter<String> originArrayAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, originList);
+        ArrayAdapter<String> destArrayAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, destList);
 
-//        originArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        destArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        routesArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-//        ospinner.setAdapter(originArrayAdapter);
-//        dspinner.setAdapter(destArrayAdapter);
-        rspinner.setAdapter(routesArrayAdapter);
+        originArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        destArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        rspinner.setAdapter(originArrayAdapter);
+        dspinner.setAdapter(destArrayAdapter);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String rotaStr = (String) parent.getSelectedItem();
-        String[] strings = rotaStr.split("-");
 
-        //Rota selecionada
-        rota = rotaController.fetchOne(strings[0],strings[1]);
     }
 
     @Override

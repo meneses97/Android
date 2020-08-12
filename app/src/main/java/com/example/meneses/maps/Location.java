@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
+import com.example.meneses.entities.Rota;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -58,6 +59,9 @@ import static java.lang.Thread.sleep;
 public class Location extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
 
+    private Rota rotaRecuperada;
+    private String rota;
+    private String[] arrayRoute;
     private GoogleMap mMap;
     Boolean mLocationPermissionGranted;
     int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION =1;
@@ -76,6 +80,15 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
 
         mDb = FirebaseFirestore.getInstance();
 
+        //Recuperando a rota vindo de Traffic
+        Bundle bundle = getIntent().getExtras();
+        rota = bundle.getString("rota");
+
+        arrayRoute = rota.split("-");
+
+        rotaRecuperada = new Rota();
+        rotaRecuperada.setOrigem(arrayRoute[0]);
+        rotaRecuperada.setDestino(arrayRoute[1]);
 
     }
 

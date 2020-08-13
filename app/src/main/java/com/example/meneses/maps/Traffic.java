@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.meneses.loginform.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,6 @@ public class Traffic extends AppCompatActivity implements AdapterView.OnItemSele
     Spinner origin_spinner;
     Spinner dest_spinner;
     List<Rota> rotaList = new ArrayList<>();
-    Rota rota;
     RotaController rotaController;
     SQLiteDatabase connection;
     DatabaseHelper databaseHelper;
@@ -58,21 +58,20 @@ public class Traffic extends AppCompatActivity implements AdapterView.OnItemSele
             @Override
             public void onClick(View v) {
                 if(origin_spinner.getSelectedItem()!=null && dest_spinner.getSelectedItem()!=null){
+                    //Rota rota = new Rota();
+                    Bundle bundle = new Bundle();
+
                     Intent intent = new Intent(Traffic.this,Location.class);
+                    bundle.putString("rota", origin_spinner.getSelectedItem().toString()+
+                            "-"+dest_spinner.getSelectedItem().toString());
+
+                    intent.putExtras(bundle);
+
                     startActivity(intent);
                 }else{
                     Toast.makeText(getApplicationContext()
                             , "Routes not registered! Can't move to next step", Toast.LENGTH_LONG).show();
                 }
-            }
-        });
-
-
-        searchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Traffic.this,Location.class);
-                startActivity(intent);
             }
         });
 

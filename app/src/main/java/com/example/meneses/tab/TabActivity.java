@@ -118,11 +118,6 @@ public class TabActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         switch (id){
 
             case R.id.logOut:{
@@ -193,7 +188,7 @@ public class TabActivity extends AppCompatActivity {
             return;
         }else {
 
-            Toast.makeText(getBaseContext(),"Press back again to exit",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"Press back again to exit",Toast.LENGTH_SHORT).show();
 //            backPressedTime++;
         }
         backPressedTime = System.currentTimeMillis();

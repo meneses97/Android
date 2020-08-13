@@ -67,7 +67,6 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
     int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION =1;
     private FirebaseFirestore mDb;
 
-    List <LatLng> lista= new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +108,6 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
 
         getLocationPermission();
 
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 
 // Create a query against the collection.

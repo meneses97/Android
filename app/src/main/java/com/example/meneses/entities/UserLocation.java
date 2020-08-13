@@ -12,6 +12,7 @@ public class UserLocation {
     private Date timestamp;
     private User user;
     private Car car;
+    private Rota rota;
 
     public UserLocation() {
     }
@@ -52,6 +53,14 @@ public class UserLocation {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Rota getRota() {
+        return rota;
+    }
+
+    public void setRota(Rota rota) {
+        this.rota = rota;
     }
 
     @Override

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.meneses.entities.Car;
+import com.example.meneses.entities.Rota;
 import com.example.meneses.entities.User;
 import com.example.meneses.entities.UserLocation;
 import com.example.meneses.weather.Weather;
@@ -33,6 +34,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -156,6 +159,17 @@ public class UpdateLocation extends Fragment implements Runnable {
                                                 String licenca="";
                                                 if (task.isSuccessful()){
                                                     for (QueryDocumentSnapshot document : task.getResult()){
+
+                                                        Map<String,Object> rotaD = (HashMap) document.get("rota");
+                                                        Rota rota = new Rota();
+
+                                                        if (rotaD != null){
+                                                            rota.setDestino(rotaD.get("destino").toString());
+                                                            rota.setOrigem(rotaD.get("origem").toString());
+
+                                                            userLocation.setRota(rota);
+
+                                                        }
 
                                                         if (document.contains("marca")
                                                                 && document.contains("matricula")

@@ -145,11 +145,17 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
                                 Map<String,Object> car = (HashMap) document.get("car");
                                 Map<String,Object> user = (HashMap) document.get("user");
                                 Map<String,Object> list = (HashMap)document.get("geoPoint");
+                                Map<String,Object> rota = (HashMap)document.get("rota");
                                 lng = new LatLng(Double.parseDouble( list.get("latitude").toString()),Double.parseDouble(list.get("longitude").toString()));
-                                if (car!= null){
-                                    marca = car.get("marca").toString();
-                                    matricula = car.get("matricula").toString();
-                                    mMap.addMarker(new MarkerOptions().position(lng).title(user.get("name")+"*"+marca+"*"+matricula )).showInfoWindow();
+                                if (car!= null && rota!=null){
+                                    if (rotaRecuperada.getDestino().equals(rota.get("destino").toString())
+                                            && rotaRecuperada.getOrigem().equals(rota.get("origem").toString())){
+
+                                        marca = car.get("marca").toString();
+                                        matricula = car.get("matricula").toString();
+                                        mMap.addMarker(new MarkerOptions().position(lng).title(user.get("name")+"*"+marca+"*"+matricula )).showInfoWindow();
+
+                                    }
 
                                 }
 //                                mMap.addMarker(new MarkerOptions().position(lng).title(user.get("name")+"*"+marca+"*"+matricula )).showInfoWindow();

@@ -139,6 +139,7 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
                                     marca = car.get("marca").toString();
                                     matricula = car.get("matricula").toString();
                                     mMap.addMarker(new MarkerOptions().position(lng).title(user.get("name")+"*"+marca+"*"+matricula )).showInfoWindow();
+
                                 }
 //                                mMap.addMarker(new MarkerOptions().position(lng).title(user.get("name")+"*"+marca+"*"+matricula )).showInfoWindow();
                             }

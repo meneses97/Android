@@ -148,8 +148,8 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
                                 Map<String,Object> rota = (HashMap)document.get("rota");
                                 lng = new LatLng(Double.parseDouble( list.get("latitude").toString()),Double.parseDouble(list.get("longitude").toString()));
                                 if (car!= null && rota!=null){
-                                    if (rotaRecuperada.getDestino().equals(rota.get("destino").toString())
-                                            && rotaRecuperada.getOrigem().equals(rota.get("origem").toString())){
+                                    if (rotaRecuperada.getDestino().equalsIgnoreCase(rota.get("destino").toString())
+                                            && rotaRecuperada.getOrigem().equalsIgnoreCase(rota.get("origem").toString())){
 
                                         marca = car.get("marca").toString();
                                         matricula = car.get("matricula").toString();
@@ -164,7 +164,7 @@ public class Location extends FragmentActivity implements OnMapReadyCallback, Go
                             Log.w("", "Error getting documents.", task.getException());
                         }
                     }
-                });
+        });
     }
 
     private void updateLocationUI() {

@@ -40,9 +40,8 @@ import java.util.Map;
 
 public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    Spinner rspinner;
-    Spinner dspinner;
-    EditText userName,userPassword,verPassword,userEmail,carId,matId,licId;
+
+    EditText userName,userPassword,verPassword,userEmail,carId,matId,licId,origin,destination;
     TextView userLogin;
     Button regUser;
     private ProgressDialog mProgress;
@@ -89,6 +88,8 @@ public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelect
                 String password = userPassword.getText().toString();
                 final String email = userEmail.getText().toString();
                 String pass2 = verPassword.getText().toString();
+                final String org = origin.getText().toString();
+                final String dest = destination.getText().toString();
 
                 final String car =  carId.getText().toString();
                 final String matricula = matId.getText().toString();
@@ -125,10 +126,18 @@ public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelect
                     carId.setError("Required!");
                 }
                 if(TextUtils.isEmpty(matricula)){
-                    carId.setError("Required!");
+                    matId.setError("Required!");
                 }
                 if(TextUtils.isEmpty(lic)){
-                    carId.setError("Required!");
+                    licId.setError("Required!");
+                }
+
+                if(TextUtils.isEmpty(org)){
+                    origin.setError("Required!");
+                }
+
+                if(TextUtils.isEmpty(dest)){
+                    destination.setError("Required!");
                 }
                 mProgress.show();
 
@@ -140,8 +149,8 @@ public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelect
 
                             Rota rota = new Rota();
 
-                            rota.setOrigem(rspinner.getSelectedItem().toString());
-                            rota.setDestino(dspinner.getSelectedItem().toString());
+                            rota.setOrigem(org);
+                            rota.setDestino(dest);
 
                             Map<String, Object> mUser = new HashMap<>();
                             mUser.put("email", email);
@@ -203,11 +212,12 @@ public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelect
 
 
     public void setUpViews() {
-        rspinner = findViewById(R.id.r_spinner);
-        dspinner = findViewById(R.id.d_spinner);
+//        rspinner = findViewById(R.id.r_spinner);
+//        dspinner = findViewById(R.id.d_spinner);
 
-        setSpinnerValues();
-
+//        setSpinnerValues();
+        origin = findViewById(R.id.origin_field);
+        destination = findViewById(R.id.dest_field);
         userName = findViewById(R.id.name);
         userPassword = findViewById(R.id.pass);
         userEmail = findViewById(R.id.email);
@@ -219,36 +229,36 @@ public class Tasks extends AppCompatActivity implements AdapterView.OnItemSelect
         licId = findViewById(R.id.licId);
     }
 
-    public void setSpinnerValues(){
-        List<String> originList = new ArrayList<>();
-        List<String> destList = new ArrayList<>();
-
-        connection = databaseHelper.getReadableDatabase();
-        rotaController = new RotaController(connection);
-
-        List<Rota> rotaList = rotaController.fetchAll();
-
-        for(Rota rota: rotaList){
-            if(!originList.contains(rota.getOrigem())) {
-                originList.add(rota.getOrigem());
-            }
-            if(!destList.contains(rota.getDestino())){
-                destList.add(rota.getDestino());
-            }
-        }
-
-        ArrayAdapter<String> originArrayAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, originList);
-        ArrayAdapter<String> destArrayAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, destList);
-
-
-        originArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        destArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        rspinner.setAdapter(originArrayAdapter);
-        dspinner.setAdapter(destArrayAdapter);
-    }
+//    public void setSpinnerValues(){
+//        List<String> originList = new ArrayList<>();
+//        List<String> destList = new ArrayList<>();
+//
+//        connection = databaseHelper.getReadableDatabase();
+//        rotaController = new RotaController(connection);
+//
+//        List<Rota> rotaList = rotaController.fetchAll();
+//
+//        for(Rota rota: rotaList){
+//            if(!originList.contains(rota.getOrigem())) {
+//                originList.add(rota.getOrigem());
+//            }
+//            if(!destList.contains(rota.getDestino())){
+//                destList.add(rota.getDestino());
+//            }
+//        }
+//
+//        ArrayAdapter<String> originArrayAdapter = new ArrayAdapter<>(this,
+//                android.R.layout.simple_spinner_item, originList);
+//        ArrayAdapter<String> destArrayAdapter = new ArrayAdapter<>(this,
+//                android.R.layout.simple_spinner_item, destList);
+//
+//
+//        originArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        destArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        rspinner.setAdapter(originArrayAdapter);
+//        dspinner.setAdapter(destArrayAdapter);
+//    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

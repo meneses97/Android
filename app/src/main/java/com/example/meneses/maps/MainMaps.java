@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.meneses.loginform.ListingRoutes;
+import com.example.meneses.loginform.ListingRoutes1;
 import com.example.meneses.thread.UpdateLocation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -21,6 +24,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.meneses.loginform.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainMaps extends Fragment {
 
@@ -28,6 +36,7 @@ public class MainMaps extends Fragment {
     Button timetable_button;
     Button addNewRoute_button;
     Button viewRoutes_button;
+    private FirebaseFirestore mDb;
 
     @Nullable
     @Override
@@ -37,6 +46,7 @@ public class MainMaps extends Fragment {
         traffic_button = view.findViewById(R.id.traffic_btn);
         addNewRoute_button = view.findViewById(R.id.btn_addRotas);
         viewRoutes_button = view.findViewById(R.id.btn_viewRotas);
+        mDb = FirebaseFirestore.getInstance();
         traffic_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,6 +65,27 @@ public class MainMaps extends Fragment {
 //                startActivity(intent);
             }
         });
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user!=null){
+            mDb.collection("admin").whereEqualTo("email",user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()){
+                        for (QueryDocumentSnapshot document : task.getResult()){
+
+                            if(document.getData().get("email").toString().equals(user.getEmail())){
+                                addNewRoute_button.setVisibility(View.VISIBLE);
+                            }
+                            break;
+
+                        }
+                    }
+                }
+            });
+
+        }
+
 
         addNewRoute_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +99,8 @@ public class MainMaps extends Fragment {
         viewRoutes_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ListingRoutes.class);
+//                Intent intent = new Intent(getActivity(), ListingRoutes.class);
+                Intent intent = new Intent(getActivity(), ListingRoutes1.class);
 
                 startActivity(intent);
             }

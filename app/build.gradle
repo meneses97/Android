@@ -47,4 +47,7 @@ dependencies {
 //    implementation 'com.google.firebase:firebase-firestore:15.0.0'
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
     implementation 'androidx.multidex:multidex:2.0.1'
+    // FirebaseUI for Cloud Firestore
+    implementation 'com.firebaseui:firebase-ui-firestore:6.3.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
 }

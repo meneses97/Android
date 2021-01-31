@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_gradient">
+        android:background="@color/cardview_light_background">
 
         <EditText
             android:id="@+id/name"
@@ -115,8 +115,9 @@
             android:layout_below="@+id/licId"
             android:layout_margin="8dp"
             android:ems="10"
-            android:background="@drawable/bg_gradient"
+            android:background="@color/cardview_light_background"
             android:text="Chose Route"
+            android:textColor="@color/cardview_dark_background"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -148,16 +149,22 @@
             android:textColorHint="@android:color/white"
             android:textColorLink="@color/colorPrimary" />
 
+
         <Button
             android:id="@+id/btRegister"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/dest_field"
-            android:layout_marginBottom="46dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="129dp"
+            android:layout_marginLeft="129dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="132dp"
+            android:layout_marginRight="132dp"
             android:text="Register" />
-
 
         <TextView
             android:id="@+id/tvUserLogin"
@@ -167,6 +174,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"
             android:text="Already Signed In? Login"
+            android:textColor="@color/cardview_dark_background"
             android:textSize="16sp" />
 
 
